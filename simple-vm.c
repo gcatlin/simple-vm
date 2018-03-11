@@ -66,8 +66,8 @@ void vm_run(VM *vm){
         opcode = NCODE(vm); // fetch
         switch (opcode) { // decode
             case CONST_I32:
-                v = NCODE(vm); // get next value from code ...
-                PUSH(vm, v);   // ... and move it on top of the stack
+                // get next value from code and move it on top of the stack
+                PUSH(vm, NCODE(vm));
                 break;
             case ADD_I32:
                 PUSH(vm, POP(vm) + POP(vm));
@@ -111,17 +111,20 @@ void vm_run(VM *vm){
                 vm->locals[addr] = v; // ... and store value at address received
                 break;
             case LOAD:                // load local value or function arg
-                offset = NCODE(vm);   // get next value from code to identify local variables offset start on the stack
-                PUSH(vm, vm->stack[vm->fp+offset]); // ... put on the top of the stack variable stored relatively to frame pointer
+                // get next value from code to identify local variables offset,
+                // start on the stack and put it on the top of the stack,
+                // variable stored relatively to frame pointer
+                PUSH(vm, vm->stack[vm->fp + NCODE(vm)]);
                 break;
             case LDARG:
-                offset = NCODE(vm);
-                PUSH(vm, vm->stack[vm->fp-3-offset]);
+                PUSH(vm, vm->stack[vm->fp - 3 - NCODE(vm)]);
                 break;
-            case STORE:               // store local value or function arg
-                v = POP(vm);          // get value from top of the stack ...
-                offset = NCODE(vm);   // ... get the relative pointer address from code ...
-                vm->locals[vm->fp+offset] = v;  // ... and store value at address received relatively to frame pointer
+            case STORE:
+                // store local value or function arg
+                // get value from top of the stack ...
+                // ... get the relative pointer address from code ...
+                // ... and store value at address received relatively to frame pointer
+                vm->locals[vm->fp + NCODE(vm)] = POP(vm);
                 break;
             case CALL:
                 // we expect all args to be on the stack
