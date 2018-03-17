@@ -7,3 +7,6 @@ Mostly a copy/paste of [Simple Virtual Machine](http://bartoszsypytkowski.com/si
 cc simple-vm.c && ./a.out
 ```
 It prints `8` because it runs the equivalent of `fib(6)` (hard-coded in the source).
+
+## Related
+- [fa-vm](https://github.com/gcatlin/fa-vm)
